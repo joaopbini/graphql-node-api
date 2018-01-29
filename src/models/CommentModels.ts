@@ -1,4 +1,5 @@
-import * as Sequelize from 'sequelize'
+import * as Sequelize from 'sequelize';
+
 import { BaseModelInterface } from '../interfaces/BaseModelInterface';
 import { ModelsInterface } from '../interfaces/ModelsInterface';
 
@@ -16,6 +17,7 @@ export interface CommentInstance extends Sequelize.Instance<CommentAttributes> {
 export interface CommentModel extends BaseModelInterface, Sequelize.Model<CommentInstance, CommentAttributes> { }
 
 export default (sequelize: Sequelize.Sequelize, DataTypes: Sequelize.DataTypes): CommentModel => {
+
     const Comment: CommentModel = sequelize.define('Comment', {
         id: {
             type: DataTypes.INTEGER,
@@ -27,12 +29,12 @@ export default (sequelize: Sequelize.Sequelize, DataTypes: Sequelize.DataTypes):
             type: DataTypes.TEXT,
             allowNull: false
         }
-    },
-        {
+    }, {
             tableName: 'comments'
         });
 
     Comment.associate = (models: ModelsInterface): void => {
+
         Comment.belongsTo(models.Post, {
             foreignKey: {
                 allowNull: false,
@@ -52,4 +54,5 @@ export default (sequelize: Sequelize.Sequelize, DataTypes: Sequelize.DataTypes):
     };
 
     return Comment;
+
 };

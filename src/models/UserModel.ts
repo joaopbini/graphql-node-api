@@ -1,7 +1,9 @@
-import * as Sequelize from 'sequelize'
+import * as Sequelize from 'sequelize';
+import { genSaltSync, hashSync, compareSync } from 'bcryptjs';
+
 import { BaseModelInterface } from '../interfaces/BaseModelInterface';
-import { genSaltSync, hashSync, compareSync } from 'bcryptjs'
 import { ModelsInterface } from '../interfaces/ModelsInterface';
+
 export interface UserAttributes {
     id?: number;
     name?: string;
@@ -16,11 +18,10 @@ export interface UserInstance extends Sequelize.Instance<UserAttributes>, UserAt
     isPassword(encodedPassword: string, password: string): boolean;
 }
 
-export interface UserModel extends BaseModelInterface, Sequelize.Model<UserInstance, UserAttributes> {
-
-}
+export interface UserModel extends BaseModelInterface, Sequelize.Model<UserInstance, UserAttributes> { }
 
 export default (sequelize: Sequelize.Sequelize, DataTypes: Sequelize.DataTypes): UserModel => {
+
     const User: UserModel =
         sequelize.define('User', {
             id: {
@@ -52,18 +53,23 @@ export default (sequelize: Sequelize.Sequelize, DataTypes: Sequelize.DataTypes):
                 allowNull: true,
                 defaultValue: null
             }
-        },
-            {
+        }, {
                 tableName: 'users',
                 hooks: {
                     beforeCreate: (user: UserInstance, options: Sequelize.CreateOptions): void => {
                         const salt = genSaltSync();
                         user.password = hashSync(user.password, salt);
+                    },
+                    beforeUpdate: (user: UserInstance, options: Sequelize.CreateOptions): void => {
+                        if (user.changed('password')) {
+                            const salt = genSaltSync();
+                            user.password = hashSync(user.password, salt);
+                        }
                     }
                 }
             });
 
-    User.associate = (models: ModelsInterface) => { };
+    User.associate = (models: ModelsInterface): void => { };
 
     User.prototype.isPassword = (encodedPassword: string, password: string): boolean => {
         return compareSync(password, encodedPassword);
