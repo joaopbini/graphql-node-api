@@ -9,8 +9,8 @@ Install the dependencies and devDependencies and start the server.
 ```sh
 $ cd graphql-node-api
 $ npm install -d
-$ node run gulp
-$ node run dev
+$ npm run gulp
+$ npm run dev
 ```
 
 License
