@@ -3,11 +3,14 @@ import * as path from 'path';
 import * as Sequelize from 'sequelize';
 
 import { DbConnection } from '../interfaces/DbConnectionInterface';
+import { JWT_SECRET } from '../utils/utils';
 
 const basename: string = path.basename(module.filename);
 const env: string = process.env.NODE_ENV || 'development';
 let config = require(path.resolve(`${__dirname}./../config/config.json`))[env];
 let db = null;
+
+console.log(JWT_SECRET)
 
 if (!db) {
 
