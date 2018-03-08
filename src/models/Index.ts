@@ -10,8 +10,6 @@ const env: string = process.env.NODE_ENV || 'development';
 let config = require(path.resolve(`${__dirname}./../config/config.json`))[env];
 let db = null;
 
-console.log(JWT_SECRET)
-
 if (!db) {
 
     db = {};
