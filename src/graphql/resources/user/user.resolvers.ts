@@ -25,7 +25,7 @@ export const userResolvers = {
 
     Query: {
 
-        users: compose(authResolver, verifyTokenResolver)((parent, { first = 10, offset = 0 }, { db }: { db: DbConnection }, info: GraphQLResolveInfo) => {
+        users: compose(authResolver)((parent, { first = 10, offset = 0 }, { db }: { db: DbConnection }, info: GraphQLResolveInfo) => {
             return db.User.findAll({
                 limit: first,
                 offset: offset
@@ -60,6 +60,7 @@ export const userResolvers = {
                     })
             }).catch(handleError);
         },
+
         updateUserPassword: (parent, { id, input }, { db }: { db: DbConnection }, info: GraphQLResolveInfo) => {
             id = parseInt(id);
             return db.sequelize.transaction((t: Transaction) => {
@@ -85,4 +86,5 @@ export const userResolvers = {
             }).catch(handleError);
         }
     }
+    
 };
