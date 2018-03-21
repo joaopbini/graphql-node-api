@@ -1,8 +1,7 @@
-import * as Sequelize from 'sequelize'
+import * as Sequelize from 'sequelize';
+
 import { BaseModelInterface } from '../interfaces/BaseModelInterface';
-import { fail } from 'assert';
 import { ModelsInterface } from '../interfaces/ModelsInterface';
-import UserModel from './UserModel';
 
 export interface PostAttributes {
     id?: number;
@@ -11,14 +10,15 @@ export interface PostAttributes {
     photo?: string;
     author?: number;
     createdAt?: string;
-    updatedAt: string;
+    updatedAt?: string;
 }
 
-export interface PostIntance extends Sequelize.Instance<PostAttributes> { }
+export interface PostInstance extends Sequelize.Instance<PostAttributes> {}
 
-export interface PostModel extends BaseModelInterface, Sequelize.Model<PostIntance, PostAttributes> { }
+export interface PostModel extends BaseModelInterface, Sequelize.Model<PostInstance, PostAttributes> {}
 
 export default (sequelize: Sequelize.Sequelize, DataTypes: Sequelize.DataTypes): PostModel => {
+
     const Post: PostModel = sequelize.define('Post', {
         id: {
             type: DataTypes.INTEGER,
@@ -41,8 +41,8 @@ export default (sequelize: Sequelize.Sequelize, DataTypes: Sequelize.DataTypes):
             allowNull: false
         }
     }, {
-            tableName: 'posts'
-        });
+        tableName: 'posts'
+    });
 
     Post.associate = (models: ModelsInterface): void => {
         Post.belongsTo(models.User, {
@@ -55,4 +55,5 @@ export default (sequelize: Sequelize.Sequelize, DataTypes: Sequelize.DataTypes):
     };
 
     return Post;
+
 };
