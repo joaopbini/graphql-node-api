@@ -5,20 +5,25 @@ import { UserLoader } from "./UserLoader";
 import { UserInstance } from "../../models/UserModel";
 import { PostInstance } from "../../models/PostModel";
 import { PostLoader } from "./PostLoader";
+import { RequestedFields } from "../ast/RequestedFields";
+import { DataLoaderParam } from "../../interfaces/DataLoaderParamInterface";
 
 export class DataLoaderFactory {
 
     constructor(
-        private db: DbConnection
+        private db: DbConnection,
+        private requestedFields: RequestedFields
     ) { }
 
     getLoaders(): DataLoaders {
         return {
-            userLoader: new DataLoader<number, UserInstance>(
-                (ids: number[]) => UserLoader.batchUsers(this.db.User, ids)
+            userLoader: new DataLoader<DataLoaderParam<number>, UserInstance>(
+                (params: DataLoaderParam<number>[]) => UserLoader.batchUsers(this.db.User, params, this.requestedFields),
+                { cacheKeyFn: (param: DataLoaderParam<number>[]) => param.keys }
             ),
-            postLoader: new DataLoader<number, PostInstance>(
-                (ids: number[]) => PostLoader.batchPosts(this.db.Post, ids)
+            postLoader: new DataLoader<DataLoaderParam<number>, PostInstance>(
+                (params: DataLoaderParam<number>[]) => PostLoader.batchPosts(this.db.Post, params, this.requestedFields),
+                { cacheKeyFn: (param: DataLoaderParam<number>[]) => param.keys }
             )
         };
     }
